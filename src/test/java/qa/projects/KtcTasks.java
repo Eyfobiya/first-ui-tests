@@ -9,7 +9,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.Wait;
+import static com.codeborne.selenide.Selenide.open;
 import static qa.projects.modals.CartModal.*;
 import static qa.projects.pages.BasePage.*;
 import static qa.projects.pages.CategoriesPage.*;
@@ -96,15 +97,14 @@ public class KtcTasks {
         sortListDisplayButton.shouldHave(Condition.text("Найдорожчі"));
         Wait().withTimeout(Duration.ofSeconds(3)).pollingEvery(Duration.ofMillis(500)).until(driver -> {
             List<String> collection = getProductPrice.texts();
-            int ProductPrice1 = Integer.parseInt(collection.get(0).replaceAll("[^0-9]", ""));
-            Random random = new Random();
-            int productPriceRandom = 0;
-            for (int i = 0; i < 1; i++) {
-                int randomIndex = random.nextInt(collection.size());
-                productPriceRandom = Integer.parseInt(collection.get(randomIndex).replaceAll("[^0-9]", ""));
-            }
-            System.out.println("ProductPrice1 = " + ProductPrice1 + "; productPriceRandom = " + productPriceRandom + ";");
-            return ProductPrice1 > productPriceRandom;
+            int productPrice1 = Integer.parseInt(collection.get(0).replaceAll("[^0-9]", ""));
+            int randomProductIndex;
+            do {
+                randomProductIndex = new Random().nextInt(collection.size());
+            } while (randomProductIndex == productPrice1);
+            int productPriceRandom = Integer.parseInt(collection.get(randomProductIndex).replaceAll("[^0-9]", ""));
+            System.out.println("ProductPrice1 = " + productPrice1 + "; productPriceRandom = " + productPriceRandom + ";");
+            return productPrice1 > productPriceRandom;
         });
     }
 
