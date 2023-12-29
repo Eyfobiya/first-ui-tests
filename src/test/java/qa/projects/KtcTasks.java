@@ -90,7 +90,7 @@ public class KtcTasks {
      */
 
     @Test
-    public void checkSortingTask4(){
+    public void checkRandomSelectV1(){
         searchInput.setValue("iphone").pressEnter();
         sortListDisplayButton.click();
         sortExpensiveButton.click();
@@ -107,7 +107,21 @@ public class KtcTasks {
             return productPrice1 > productPriceRandom;
         });
     }
-
+    @Test
+    public void checkRandomSelectV2(){
+        searchInput.setValue("iphone").pressEnter();
+        sortListDisplayButton.click();
+        sortExpensiveButton.click();
+        sortListDisplayButton.shouldHave(Condition.text("Найдорожчі"));
+        Wait().withTimeout(Duration.ofSeconds(3)).pollingEvery(Duration.ofMillis(500)).until(driver -> {
+            List<String> collection = getProductPrice.texts();
+            int productPrice1 = Integer.parseInt(collection.get(0).replaceAll("[^0-9]", ""));
+            int randomProductIndex = new Random().nextInt(collection.size()) + 1;
+            int productPriceRandom = Integer.parseInt(collection.get(randomProductIndex).replaceAll("[^0-9]", ""));
+            System.out.println("ProductPrice1 = " + productPrice1 + "; productPriceRandom = " + productPriceRandom + ";");
+            return productPrice1 > productPriceRandom;
+        });
+    }
     /**
      * task5
      * Type ‘iphone’ to the search field.
